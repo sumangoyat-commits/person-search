@@ -1,15 +1,10 @@
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
-import { Phone, Mail, MapPin } from 'lucide-react'
+import { Phone, Mail } from 'lucide-react'
+import { User } from '../actions/schemas'
 
-interface User {
-  id: string
-  name: string
-  phoneNumber: string
-  email?: string
-  location?: string
-}
+
 
 interface UserCardProps {
   user: User
@@ -37,12 +32,6 @@ export function UserCard({ user }: UserCardProps) {
           <div className="flex items-center gap-2">
             <Mail className="w-4 h-4 text-muted-foreground" />
             <span>{user.email}</span>
-          </div>
-        )}
-        {user.location && (
-          <div className="flex items-center gap-2">
-            <MapPin className="w-4 h-4 text-muted-foreground" />
-            <span>{user.location}</span>
           </div>
         )}
       </CardContent>
