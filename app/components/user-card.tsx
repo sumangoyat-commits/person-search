@@ -11,6 +11,10 @@ interface UserCardProps {
 }
 
 export function UserCard({ user }: UserCardProps) {
+  console.log('UserCard', user)
+  if (!user) {
+    return null
+  }
   return (
     <Card className="w-full max-w-md mx-auto">
       <CardHeader className="flex flex-row items-center gap-4">

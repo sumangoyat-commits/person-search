@@ -28,7 +28,7 @@ export default function UserSearch() {
   return (
     <div className="space-y-6">
       <AsyncSelect
-        cacheOptions
+        cacheOptions={false} //disable this to see the loading indicator
         loadOptions={loadOptions}
         onChange={handleChange}
         placeholder="Search for a user..."
