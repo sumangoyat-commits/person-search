@@ -1,12 +1,10 @@
 'use client'
-
-import { useState } from 'react'
+import React, { Suspense, useState, useEffect } from 'react'
 import AsyncSelect from 'react-select/async'
 import { searchUsers } from '@/app/actions/actions'
-import { UserCard } from './user-card'
+import UserCard from './user-card'
 import { User } from '@/app/actions/schemas'
 
-// Option type remains the same
 interface Option {
   value: string
   label: string
@@ -14,7 +12,7 @@ interface Option {
 }
 
 export default function UserSearch() {
-  const [selectedUser, setSelectedUser] = useState<User | null>(null)
+  const [selectedUserId, setSelectedUserId] = useState<string | null>(null)
 
   const loadOptions = async (inputValue: string): Promise<Option[]> => {
     const users = await searchUsers(inputValue)
@@ -22,19 +20,27 @@ export default function UserSearch() {
   }
 
   const handleChange = (option: Option | null) => {
-    setSelectedUser(option ? option.user : null)
+    setSelectedUserId(option ? option.value : null)
   }
+
+  useEffect(() => {
+    console.log('Selected user ID changed:', selectedUserId)
+  }, [selectedUserId])
 
   return (
     <div className="space-y-6">
       <AsyncSelect
-        cacheOptions={false} //disable this to see the loading indicator
+        cacheOptions={false}
         loadOptions={loadOptions}
         onChange={handleChange}
         placeholder="Search for a user..."
         className="w-full max-w-md mx-auto"
       />
-      {selectedUser && <UserCard user={selectedUser} />}
+      {selectedUserId && (
+        <Suspense fallback={<p>Loading user...</p>}>
+          <UserCard userId={selectedUserId} />
+        </Suspense>
+      )}
     </div>
   )
 }

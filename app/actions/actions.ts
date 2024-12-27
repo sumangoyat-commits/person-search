@@ -1,5 +1,6 @@
 'use server'
 
+import { revalidatePath } from 'next/cache'
 import { User, userSchema } from './schemas'
 
 const users: User[] = [
@@ -28,14 +29,14 @@ export async function addUser(data: Omit<User, 'id'>): Promise<User> {
     return validatedUser
 }
 
-export async function deleteUser(id: string): Promise<boolean> {
+export async function deleteUser(id: string): Promise<void> {
     const index = users.findIndex(user => user.id === id)
     if (index === -1) {
         throw new Error(`User with id ${id} not found`)
     }
     users.splice(index, 1)
     console.log(`User with id ${id} has been deleted.`)
-    return true
+    revalidatePath('/')
 }
 
 export async function updateUser(id: string, data: Partial<Omit<User, 'id'>>): Promise<User> {
@@ -50,5 +51,12 @@ export async function updateUser(id: string, data: Partial<Omit<User, 'id'>>): P
 
     users[index] = validatedUser
     console.log(`User with id ${id} has been updated.`)
+    revalidatePath('/')
+
     return validatedUser
+}
+
+
+export async function getUserById(id: string): Promise<User | null> {
+    return users.find(user => user.id === id) || null
 }

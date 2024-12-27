@@ -1,20 +1,26 @@
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
+// components/user-card.tsx
+
+import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Phone, Mail } from 'lucide-react'
-import { User } from '../actions/schemas'
-
-
+import { getUserById } from '../actions/actions'
+import DeleteButton from './delete-button'
 
 interface UserCardProps {
-  user: User
+  userId: string
 }
 
-export function UserCard({ user }: UserCardProps) {
-  console.log('UserCard', user)
+export default async function UserCard({ userId }: UserCardProps) {
+  console.log('Fetching user for UserCard with ID:', userId)
+
+  const user = await getUserById(userId)
+
   if (!user) {
+    console.log('UserCard: No user found for ID:', userId)
     return null
   }
+
   return (
     <Card className="w-full max-w-md mx-auto">
       <CardHeader className="flex flex-row items-center gap-4">
@@ -39,6 +45,9 @@ export function UserCard({ user }: UserCardProps) {
           </div>
         )}
       </CardContent>
+      <CardFooter className="flex justify-between items-center">
+        <DeleteButton userId={user.id} />
+      </CardFooter>
     </Card>
   )
 }
