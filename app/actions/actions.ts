@@ -20,7 +20,9 @@ const users: User[] = [
 
 export async function searchUsers(query: string): Promise<User[]> {
     console.log('Searching users with query:', query)
-    return users.filter(user => user.name.toLowerCase().startsWith(query.toLowerCase()))
+    const results =  users.filter(user => user.name.toLowerCase().startsWith(query.toLowerCase()))
+    console.log('Search results:', results)
+    return results
 }
 
 export async function addUser(data: Omit<User, 'id'>): Promise<User> {
@@ -61,5 +63,6 @@ export async function updateUser(id: string, data: Partial<Omit<User, 'id'>>): P
 
 export async function getUserById(id: string): Promise<User | null> {
   const user = users.find(user => user.id === id)
+  console.log('User found:', user)
   return user || null
 }

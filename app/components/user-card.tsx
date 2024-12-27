@@ -1,21 +1,42 @@
 'use client'
 
+import { useEffect, useState } from 'react'
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Phone, Mail, Trash, Edit } from 'lucide-react'
 import { User } from '@/app/actions/schemas'
-import { deleteUser } from '@/app/actions/actions'
+import { getUserById } from '@/app/actions/actions'
 import { UserAvatar } from './user-avatar'
+import DeleteButton from './delete-button'
 
 interface UserCardProps {
   user: User
 }
 
-export default function UserCard({ user }: UserCardProps) {
-  const handleDelete = async () => {
-    await deleteUser(user.id)
-    // You might want to add some state management here to remove the card from the UI
+export function UserCard({ user: initialUser }: UserCardProps) {
+  const [user, setUser] = useState<User | null>(initialUser)
+
+  useEffect(() => {
+    const fetchLatestUserData = async () => {
+      if (initialUser?.id) {
+        try {
+          const latestUser = await getUserById(initialUser.id)
+          setUser(latestUser)
+        } catch (error) {
+          console.error('Error fetching user data:', error)
+          setUser(null)
+        }
+      } else {
+        setUser(null)
+      }
+    }
+
+    fetchLatestUserData()
+  }, [initialUser])
+
+  if (!user) {
+    return null
   }
 
   return (
@@ -40,10 +61,7 @@ export default function UserCard({ user }: UserCardProps) {
         )}
       </CardContent>
       <CardFooter className="flex justify-end space-x-2">
-        <Button onClick={handleDelete} variant="destructive" size="sm">
-          <Trash className="w-4 h-4 mr-2" />
-          Delete
-        </Button>
+        <DeleteButton userId={user.id} />
         <Button variant="outline" size="sm">
           <Edit className="w-4 h-4 mr-2" />
           Edit

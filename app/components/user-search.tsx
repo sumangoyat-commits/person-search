@@ -1,12 +1,11 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import AsyncSelect from 'react-select/async'
-import { searchUsers } from '@/app/actions/actions'
-import UserCard  from './user-card'
+import { getUserById, searchUsers } from '@/app/actions/actions'
 import { User } from '@/app/actions/schemas'
+import {UserCard} from './user-card'
 
-// Option type remains the same
 interface Option {
   value: string
   label: string
@@ -15,6 +14,23 @@ interface Option {
 
 export default function UserSearch() {
   const [selectedUser, setSelectedUser] = useState<User | null>(null)
+  const prevUserIdRef = useRef<string | null>(null)
+
+  useEffect(() => {
+    const fetchLatestUserData = async () => {
+      if (selectedUser?.id && selectedUser.id !== prevUserIdRef.current) {
+        console.log('Fetching latest user data for:', selectedUser.id)
+        const latestUser = await getUserById(selectedUser.id)
+        console.log('Latest user data:', latestUser)
+        setSelectedUser(latestUser)
+      } else if (!selectedUser && prevUserIdRef.current) {
+        console.log('User deselected')
+      }
+      prevUserIdRef.current = selectedUser?.id || null
+    }
+
+    fetchLatestUserData()
+  }, [selectedUser?.id])
 
   const loadOptions = async (inputValue: string): Promise<Option[]> => {
     const users = await searchUsers(inputValue)
@@ -22,19 +38,25 @@ export default function UserSearch() {
   }
 
   const handleChange = (option: Option | null) => {
+    console.log('Selected user:', option)
     setSelectedUser(option ? option.user : null)
   }
 
   return (
     <div className="space-y-6">
       <AsyncSelect
-        cacheOptions
+        cacheOptions={false}
         loadOptions={loadOptions}
         onChange={handleChange}
         placeholder="Search for a user..."
         className="w-full max-w-md mx-auto"
       />
-      {selectedUser && <UserCard user={selectedUser} />}
+      {selectedUser && (
+        <div key={selectedUser.id}>
+          <UserCard user={selectedUser} />
+        </div>
+      )}
     </div>
   )
 }
+
