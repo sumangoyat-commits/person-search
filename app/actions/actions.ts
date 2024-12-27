@@ -4,6 +4,7 @@
 
 import { revalidatePath } from 'next/cache'
 import { User, userSchema } from './schemas'
+import { cache } from 'react'
 
 const users: User[] = [
     { id: '1', name: 'John Doe', phoneNumber: '0412345678', email: 'john@example.com' },
@@ -20,7 +21,7 @@ const users: User[] = [
 
 export async function searchUsers(query: string): Promise<User[]> {
     console.log('Searching users with query:', query)
-    const results =  users.filter(user => user.name.toLowerCase().startsWith(query.toLowerCase()))
+    const results = users.filter(user => user.name.toLowerCase().startsWith(query.toLowerCase()))
     console.log('Search results:', results)
     return results
 }
@@ -61,8 +62,7 @@ export async function updateUser(id: string, data: Partial<Omit<User, 'id'>>): P
     return validatedUser
 }
 
-export async function getUserById(id: string): Promise<User | null> {
-  const user = users.find(user => user.id === id)
-  console.log('User found:', user)
-  return user || null
-}
+export const getUserById = cache(async (id: string) => {
+    const user = users.find(user => user.id === id)
+    return user || null
+})

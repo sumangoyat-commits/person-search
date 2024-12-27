@@ -55,10 +55,16 @@ export default function MutableDialog<T extends FieldValues>({
         const result = formSchema.parse(values);
         console.log('Validation passed:', result); // Log the result after validation
         return { values: result, errors: {} };
-      } catch (err: any) {
-        
-        console.log('Validation errors:', err.formErrors?.fieldErrors); // Log the validation errors
-        return { values: {}, errors: err.formErrors?.fieldErrors };
+      }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+       catch (err: any) {
+        if (err.formErrors?.fieldErrors) {
+          // check if err is instance of ZodError then return the formErrors
+          console.log('Validation errors:',  err.formErrors.fieldErrors); // Log the validation errors
+          return { values: {}, errors: err.formErrors.fieldErrors };
+        }
+        console.error('Unexpected validation error:', err);
+        return { values: {}, errors: {} };
       }
     },
     defaultValues: defaultValues,

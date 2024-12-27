@@ -1,5 +1,4 @@
 // app/about/page.tsx
-'use client'
 
 import Link from 'next/link'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -21,7 +20,7 @@ export default function AboutPage() {
                   It provides a simple yet effective interface for searching and displaying user information.
                 </p>
                 <p className="mb-4">
-                  This project utilizes Next.js 14 with the App Router, React 18, TypeScript, and a variety of 
+                  This project utilizes Next.js 15 with the App Router, React 19, TypeScript, and a variety of 
                   cutting-edge libraries to create a responsive and accessible user experience.
                 </p>
                 <p>

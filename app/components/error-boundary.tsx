@@ -1,29 +1,38 @@
-'use client'
+'use client';
 
-import { useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import React, { ErrorInfo, ReactNode } from 'react';
 
-export default function ErrorBoundary({
-  children,
-}: {
-  children: React.ReactNode
-}) {
-  const router = useRouter()
-
-  useEffect(() => {
-    const handleError = (event: ErrorEvent) => {
-      console.error('Caught in error boundary:', event.error)
-      // You can add more sophisticated error handling here
-      // For example, you could send the error to an error tracking service
-    }
-
-    window.addEventListener('error', handleError)
-
-    return () => {
-      window.removeEventListener('error', handleError)
-    }
-  }, [router])
-
-  return <>{children}</>
+interface ErrorBoundaryProps {
+  children: ReactNode;
 }
+
+interface ErrorBoundaryState {
+  hasError: boolean;
+  error?: Error;
+}
+
+class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundaryState> {
+  constructor(props: ErrorBoundaryProps) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError(error: Error): ErrorBoundaryState {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+    console.error("Uncaught error:", error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return <h1>Something went wrong. Error: {this.state.error?.message}</h1>;
+    }
+
+    return this.props.children;
+  }
+}
+
+export default ErrorBoundary;
 

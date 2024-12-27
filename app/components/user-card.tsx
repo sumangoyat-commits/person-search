@@ -1,48 +1,29 @@
-'use client'
-
-import { useEffect, useState } from 'react'
+// components/user-card.tsx
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import { Phone, Mail, Trash, Edit } from 'lucide-react'
+import { Phone, Mail } from 'lucide-react'
 import { User } from '@/app/actions/schemas'
-import { getUserById } from '@/app/actions/actions'
-import { UserAvatar } from './user-avatar'
 import DeleteButton from './delete-button'
 
 interface UserCardProps {
   user: User
 }
 
-export function UserCard({ user: initialUser }: UserCardProps) {
-  const [user, setUser] = useState<User | null>(initialUser)
+console.log("UserCard module loaded");
 
-  useEffect(() => {
-    const fetchLatestUserData = async () => {
-      if (initialUser?.id) {
-        try {
-          const latestUser = await getUserById(initialUser.id)
-          setUser(latestUser)
-        } catch (error) {
-          console.error('Error fetching user data:', error)
-          setUser(null)
-        }
-      } else {
-        setUser(null)
-      }
-    }
-
-    fetchLatestUserData()
-  }, [initialUser])
-
-  if (!user) {
-    return null
+export default function UserCard({ user }: UserCardProps) {
+  if (!user || !user.name) {
+    console.error("UserCard: Invalid user object", user);
+    return <p>Error: Invalid user data</p>;
   }
 
   return (
     <Card className="w-full max-w-md mx-auto">
       <CardHeader className="flex flex-row items-center gap-4">
-        <UserAvatar user={user} />
+        <Avatar className="w-16 h-16">
+          <AvatarFallback>{user.name.split(' ').map((n) => n[0]).join('')}</AvatarFallback>
+        </Avatar>
         <div className="flex flex-col">
           <CardTitle className="text-2xl">{user.name}</CardTitle>
           <Badge variant="secondary" className="w-fit mt-1">ID: {user.id}</Badge>
@@ -60,14 +41,9 @@ export function UserCard({ user: initialUser }: UserCardProps) {
           </div>
         )}
       </CardContent>
-      <CardFooter className="flex justify-end space-x-2">
+      <CardFooter className="flex justify-between items-center">
         <DeleteButton userId={user.id} />
-        <Button variant="outline" size="sm">
-          <Edit className="w-4 h-4 mr-2" />
-          Edit
-        </Button>
       </CardFooter>
     </Card>
-  )
+  );
 }
-

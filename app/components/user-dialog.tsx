@@ -20,7 +20,7 @@ export function UserDialog() {
     } catch (error) {
       return {
         success: false,
-        message: 'Failed to add user'
+        message: 'Failed to add user ' + (error instanceof Error ? error.message : 'Unknown error')
       }
     }
   }
@@ -34,6 +34,7 @@ export function UserDialog() {
       addDialogTitle="Add New User"
       dialogDescription="Fill out the form below to add a new user."
       submitButtonLabel="Save"
+      defaultValues={{ name: '', email: '', phoneNumber: '' }} // Default empty values
     />
   )
 }
