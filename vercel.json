@@ -1,16 +1,9 @@
 {
     "version": 2,
-    "buildCommand": "npm install --force && npm run build",
+    "buildCommand": "npm run build",
     "installCommand": "npm install --force",
     "framework": "nextjs",
-    "outputDirectory": ".next",
-    "env": {
-      "NODE_ENV": "production"
-    },
-    "routes": [
-      {
-        "src": "/(.*)",
-        "dest": "/$1"
-      }
-    ]
+    "outputDirectory": ".next"
   }
+  
+  

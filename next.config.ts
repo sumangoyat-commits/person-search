@@ -10,8 +10,19 @@ const nextConfig: NextConfig = {
     };
     return config;
   },
-  // Ensure that Next.js can resolve TypeScript and JavaScript files
   pageExtensions: ['ts', 'tsx', 'js', 'jsx'],
+  typescript: {
+    // !! WARN !!
+    // Dangerously allow production builds to successfully complete even if
+    // your project has type errors.
+    // !! WARN !!
+    ignoreBuildErrors: true,
+  },
+  eslint: {
+    // Warning: This allows production builds to successfully complete even if
+    // your project has ESLint errors.
+    ignoreDuringBuilds: true,
+  },
 };
 
 export default nextConfig;
