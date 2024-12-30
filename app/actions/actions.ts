@@ -27,7 +27,7 @@ export async function searchUsers(query: string): Promise<User[]> {
 }
 
 export async function addUser(data: Omit<User, 'id'>): Promise<User> {
-    const newId = (users.length + 1).toString()
+    const newId = crypto.randomUUID();
     const newUser = { ...data, id: newId }
     const validatedUser = userSchema.parse(newUser)
     users.push(validatedUser)
