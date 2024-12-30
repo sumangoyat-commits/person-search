@@ -2,6 +2,8 @@
 
 import { revalidatePath } from 'next/cache'
 import { User, userSchema } from './schemas'
+import crypto from 'crypto';
+
 
 const users: User[] = [
     { id: '1', name: 'John Doe', phoneNumber: '0412345678', email: 'john@example.com' },
@@ -22,7 +24,7 @@ export async function searchUsers(query: string): Promise<User[]> {
 }
 
 export async function addUser(data: Omit<User, 'id'>): Promise<User> {
-    const newId = (users.length + 1).toString()
+    const newId = crypto.randomUUID();
     const newUser = { ...data, id: newId }
     const validatedUser = userSchema.parse(newUser)
     users.push(validatedUser)
