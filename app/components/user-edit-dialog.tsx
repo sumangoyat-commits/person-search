@@ -21,7 +21,7 @@ export function UserEditDialog({ user }: UserEditDialogProps) {
     } catch (error) {
       return {
         success: false,
-        message: 'Failed to update user',
+        message: 'Failed to update user' + (error instanceof Error ? error.message : String(error)),
       }
     }
   }
